@@ -1,0 +1,50 @@
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Navbar from "./components/Navbar.jsx";
+import Home from "./pages/Home.jsx";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import MovieDetails from "./pages/MovieDetails.jsx";
+import AddMovie from "./pages/AddMovie.jsx";
+import WriteReview from "./pages/WriteReview.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <Navbar />
+      <Routes>
+        {/* Public */}
+        <Route path="/login"    element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/movies/:id" element={<MovieDetails />} />
+
+        {/* Protected: logged-in users */}
+        <Route path="/" element={
+          <ProtectedRoute><Home /></ProtectedRoute>
+        } />
+        <Route path="/movies/:id/review" element={
+          <ProtectedRoute><WriteReview /></ProtectedRoute>
+        } />
+
+        {/* Admin only */}
+        <Route path="/add-movie" element={
+          <ProtectedRoute adminOnly><AddMovie /></ProtectedRoute>
+        } />
+        <Route path="/movies/:id/edit" element={
+          <ProtectedRoute adminOnly><AddMovie /></ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>
+        } />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      <footer className="footer">MOVIE-MATE &copy; 2026 &mdash; Designed for Cinema Lovers</footer>
+
+
+    </AuthProvider>
+  );
+}
