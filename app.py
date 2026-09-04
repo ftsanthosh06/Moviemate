@@ -62,6 +62,8 @@ def create_app():
             "http://127.0.0.1:3000",
             "https://moviemate-self.vercel.app",
         ],
+        allow_headers=["Content-Type", "Authorization"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     )
 
     db.init_app(app)
