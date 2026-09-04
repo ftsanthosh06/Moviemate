@@ -42,129 +42,88 @@ export default function Register() {
   };
 
   return (
-    <main className="auth-page-container">
-      {/* Motion Cinema Background Elements */}
-      <div className="cinema-bg-decor" aria-hidden="true">
-        <div className="cinema-spotlight spotlight-1"></div>
-        <div className="cinema-spotlight spotlight-2"></div>
-        <div className="cinema-spotlight spotlight-3"></div>
-
-        <div className="floating-badge badge-1">🎬</div>
-        <div className="floating-badge badge-2">🍿</div>
-        <div className="floating-badge badge-3">🎟️</div>
-        <div className="floating-badge badge-4">🎥</div>
-        <div className="floating-badge badge-5">⭐</div>
-
-        <div className="film-strip strip-top">
-          <div className="strip-track">
-            <span>🎞️ NOW SHOWING</span>
-            <span>✦</span>
-            <span>🍿 POPCORN & REVIEWS</span>
-            <span>✦</span>
-            <span>🎬 CINEMATIC EXPERIENCES</span>
-            <span>✦</span>
-            <span>⭐ DISCOVER TOP MOVIES</span>
-            <span>✦</span>
-            <span>🎞️ NOW SHOWING</span>
-            <span>✦</span>
-            <span>🍿 POPCORN & REVIEWS</span>
-            <span>✦</span>
-            <span>🎬 CINEMATIC EXPERIENCES</span>
-            <span>✦</span>
-            <span>⭐ DISCOVER TOP MOVIES</span>
-          </div>
-        </div>
-
-        <div className="film-strip strip-bottom">
-          <div className="strip-track track-reverse">
-            <span>🎥 EXCLUSIVE RATINGS</span>
-            <span>✦</span>
-            <span>🎟️ ADMIT ONE</span>
-            <span>✦</span>
-            <span>✨ LUXURY MOVIE-MATE</span>
-            <span>✦</span>
-            <span>🌟 HOLLYWOOD BLOCKBUSTERS</span>
-            <span>✦</span>
-            <span>🎥 EXCLUSIVE RATINGS</span>
-            <span>✦</span>
-            <span>🎟️ ADMIT ONE</span>
-            <span>✦</span>
-            <span>✨ LUXURY MOVIE-MATE</span>
-            <span>✦</span>
-            <span>🌟 HOLLYWOOD BLOCKBUSTERS</span>
-          </div>
-        </div>
-      </div>
+    <main className="cinema-auth-page">
+      <div className="cinema-auth-overlay"></div>
 
       <div className="auth-wrap">
-        <div className="auth-card">
-          <div className="auth-logo">
-            <span className="logo-badge">🎬</span>
-            <span>Movie-Mate</span>
-          </div>
+        <div className="cinema-auth-card">
+          <h1 className="cinema-brand-title">MOVIE-MATE</h1>
+          <div className="cinema-divider"></div>
+          <p className="cinema-brand-sub">CREATE YOUR ACCOUNT</p>
 
-          <h2 className="auth-title">Create an account</h2>
-          <p className="auth-sub">Join and start discovering great movies</p>
-
-          {serverError && <div className="alert alert-error">{serverError}</div>}
+          {serverError && <div className="alert alert-error" style={{ marginBottom: 20 }}>{serverError}</div>}
 
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Username *</label>
-              <input
-                type="text"
-                placeholder="Pick a username"
-                value={form.username}
-                onChange={(e) => update("username", e.target.value)}
-                autoFocus
-              />
+            <div className="cinema-field-group">
+              <label>USERNAME *</label>
+              <div className="cinema-input-wrap">
+                <span className="input-icon">👤</span>
+                <input
+                  type="text"
+                  placeholder="Pick a username"
+                  value={form.username}
+                  onChange={(e) => update("username", e.target.value)}
+                  autoFocus
+                />
+              </div>
               {errors.username && <div className="field-error">{errors.username}</div>}
             </div>
 
-            <div className="form-group">
-              <label>Email <span style={{color:"var(--text-muted)"}}>(optional)</span></label>
-              <input
-                type="email"
-                placeholder="you@email.com"
-                value={form.email}
-                onChange={(e) => update("email", e.target.value)}
-              />
+            <div className="cinema-field-group">
+              <label>EMAIL (OPTIONAL)</label>
+              <div className="cinema-input-wrap">
+                <span className="input-icon">✉️</span>
+                <input
+                  type="email"
+                  placeholder="you@email.com"
+                  value={form.email}
+                  onChange={(e) => update("email", e.target.value)}
+                />
+              </div>
               {errors.email && <div className="field-error">{errors.email}</div>}
             </div>
 
-            <div className="form-group">
-              <label>Password *</label>
-              <input
-                type="password"
-                placeholder="Min 6 characters"
-                value={form.password}
-                onChange={(e) => update("password", e.target.value)}
-              />
+            <div className="cinema-field-group">
+              <label>PASSWORD *</label>
+              <div className="cinema-input-wrap">
+                <span className="input-icon">🔒</span>
+                <input
+                  type="password"
+                  placeholder="Min 6 characters"
+                  value={form.password}
+                  onChange={(e) => update("password", e.target.value)}
+                />
+              </div>
               {errors.password && <div className="field-error">{errors.password}</div>}
             </div>
 
-            <div className="form-group">
-              <label>Confirm Password *</label>
-              <input
-                type="password"
-                placeholder="Repeat password"
-                value={form.confirm}
-                onChange={(e) => update("confirm", e.target.value)}
-              />
+            <div className="cinema-field-group">
+              <label>CONFIRM PASSWORD *</label>
+              <div className="cinema-input-wrap">
+                <span className="input-icon">🔑</span>
+                <input
+                  type="password"
+                  placeholder="Repeat password"
+                  value={form.confirm}
+                  onChange={(e) => update("confirm", e.target.value)}
+                />
+              </div>
               {errors.confirm && <div className="field-error">{errors.confirm}</div>}
             </div>
 
-            <button className="btn btn-primary btn-block" type="submit" disabled={loading}>
-              {loading ? "Creating account..." : "Create Account"}
+            <button className="btn btn-primary btn-block cinema-btn-primary" type="submit" disabled={loading}>
+              {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
             </button>
           </form>
 
-          <p className="auth-switch">
-            Already have an account? <Link to="/login">Sign in</Link>
-          </p>
+          <div className="cinema-switch-wrap">
+            <span style={{ fontSize: 13, color: "rgba(250, 248, 245, 0.7)" }}>Already have an account?</span>
+            <Link to="/login" className="btn btn-secondary btn-block cinema-btn-secondary" style={{ marginTop: 10 }}>
+              SIGN IN
+            </Link>
+          </div>
         </div>
       </div>
     </main>
   );
 }
-
