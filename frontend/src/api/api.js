@@ -1,16 +1,37 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://moviemate-1-28mc.onrender.com/api";
 
+function getToken() {
+  return localStorage.getItem("moviemate_token") || "";
+}
+
+function setToken(token) {
+  if (token) {
+    localStorage.setItem("moviemate_token", token);
+  }
+}
+
+function clearToken() {
+  localStorage.removeItem("moviemate_token");
+}
+
 async function request(path, options = {}) {
   let res;
+  const token = getToken();
+  const headers = {
+    "Content-Type": "application/json",
+    ...(token ? { "Authorization": `Bearer ${token}` } : {}),
+    ...(options.headers || {}),
+  };
+
   try {
     res = await fetch(`${BASE_URL}${path}`, {
-      headers: { "Content-Type": "application/json" },
       credentials: "include",   // send session cookie with every request
       ...options,
+      headers,
     });
   } catch (err) {
     if (err instanceof TypeError || (err.message && err.message.toLowerCase().includes("fetch"))) {
-      throw new Error("Failed to connect to backend server. Please ensure the Flask backend is running on port 5000.");
+      throw new Error("Failed to connect to backend server. Please ensure the backend server is running.");
     }
     throw err;
   }
@@ -22,6 +43,11 @@ async function request(path, options = {}) {
     const message = (data && data.error) || `Request failed with status ${res.status}`;
     throw new Error(message);
   }
+
+  if (data && data.token) {
+    setToken(data.token);
+  }
+
   return data;
 }
 
@@ -29,9 +55,21 @@ async function request(path, options = {}) {
 export const api = {
   // ── Auth ──────────────────────────────────────────────────
   me:       ()        => request("/auth/me"),
-  login:    (payload) => request("/auth/login",    { method: "POST", body: JSON.stringify(payload) }),
-  register: (payload) => request("/auth/register", { method: "POST", body: JSON.stringify(payload) }),
-  logout:   ()        => request("/auth/logout",   { method: "POST" }),
+  login:    async (payload) => {
+    const data = await request("/auth/login", { method: "POST", body: JSON.stringify(payload) });
+    if (data && data.token) setToken(data.token);
+    return data;
+  },
+  register: async (payload) => {
+    const data = await request("/auth/register", { method: "POST", body: JSON.stringify(payload) });
+    if (data && data.token) setToken(data.token);
+    return data;
+  },
+  logout:   async ()  => {
+    clearToken();
+    return request("/auth/logout", { method: "POST" });
+  },
+
 
   // ── Movies ────────────────────────────────────────────────
   getMovies: (params = {}) => {

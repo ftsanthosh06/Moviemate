@@ -1,17 +1,61 @@
 """Auth blueprint — register, login, logout, current user."""
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, current_app
+from itsdangerous import URLSafeTimedSerializer
 from extensions import db
 from models.user import User
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
+
+TOKEN_SALT = "movie-mate-auth-salt"
+
+
+def generate_token(user_id):
+    serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+    return serializer.dumps({"user_id": user_id}, salt=TOKEN_SALT)
+
+
+def verify_token(token):
+    if not token:
+        return None
+    serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+    try:
+        data = serializer.loads(token, salt=TOKEN_SALT, max_age=30 * 86400)
+        return data.get("user_id")
+    except Exception:
+        return None
+
+
+def get_current_user_id():
+    # 1. Check session cookie
+    if "user_id" in session:
+        return session["user_id"]
+
+    # 2. Check Authorization Bearer header
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ", 1)[1].strip()
+        user_id = verify_token(token)
+        if user_id:
+            return user_id
+
+    # 3. Check X-Auth-Token header
+    token_header = request.headers.get("X-Auth-Token")
+    if token_header:
+        user_id = verify_token(token_header.strip())
+        if user_id:
+            return user_id
+
+    return None
 
 
 def login_required(f):
     from functools import wraps
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "user_id" not in session:
+        user_id = get_current_user_id()
+        if not user_id:
             return jsonify({"error": "Login required"}), 401
+        session["user_id"] = user_id
         return f(*args, **kwargs)
     return decorated
 
@@ -20,11 +64,13 @@ def admin_required(f):
     from functools import wraps
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "user_id" not in session:
+        user_id = get_current_user_id()
+        if not user_id:
             return jsonify({"error": "Login required"}), 401
-        user = User.query.get(session["user_id"])
+        user = User.query.get(user_id)
         if not user or not user.is_admin():
             return jsonify({"error": "Admin access required"}), 403
+        session["user_id"] = user_id
         return f(*args, **kwargs)
     return decorated
 
@@ -58,8 +104,9 @@ def register():
     session.permanent = True
     session["user_id"] = user.id
     session["role"]    = user.role
+    token = generate_token(user.id)
 
-    return jsonify({"message": "Registered successfully", "user": user.to_dict()}), 201
+    return jsonify({"message": "Registered successfully", "user": user.to_dict(), "token": token}), 201
 
 
 @auth_bp.post("/login")
@@ -78,8 +125,9 @@ def login():
     session.permanent = True
     session["user_id"] = user.id
     session["role"]    = user.role
+    token = generate_token(user.id)
 
-    return jsonify({"message": "Logged in", "user": user.to_dict()}), 200
+    return jsonify({"message": "Logged in", "user": user.to_dict(), "token": token}), 200
 
 
 @auth_bp.post("/logout")
@@ -90,11 +138,13 @@ def logout():
 
 @auth_bp.get("/me")
 def me():
-    user_id = session.get("user_id")
+    user_id = get_current_user_id()
     if not user_id:
         return jsonify({"error": "Not logged in"}), 401
     user = User.query.get(user_id)
     if not user:
         session.clear()
         return jsonify({"error": "User not found"}), 401
-    return jsonify({"user": user.to_dict()}), 200
+    token = generate_token(user.id)
+    return jsonify({"user": user.to_dict(), "token": token}), 200
+

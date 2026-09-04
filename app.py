@@ -8,8 +8,9 @@ import os
 # Add backend directory to path so imports work
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
+
 
 from config import Config
 from extensions import db, bcrypt
@@ -49,7 +50,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Allow credentials from React dev server (supports port 5173, 5174, 3000, 127.0.0.1)
+    # Allow credentials and Authorization headers from local and Vercel frontends
     CORS(
         app,
         supports_credentials=True,
@@ -60,16 +61,26 @@ def create_app():
             "http://127.0.0.1:5174",
             "http://localhost:3000",
             "http://127.0.0.1:3000",
-             "https://moviemate-self.vercel.app",
+            "https://moviemate-self.vercel.app",
         ],
-        allow_headers=["Content-Type", "Authorization"],
+        allow_headers=["Content-Type", "Authorization", "X-Auth-Token"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     )
-    
-    # Session configuration for production
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
     app.config['SESSION_COOKIE_SECURE'] = True
     app.config['SESSION_COOKIE_HTTPONLY'] = True
+
+    @app.after_request
+    def handle_cors(response):
+        origin = request.headers.get("Origin")
+        if origin:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Auth-Token"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        return response
+
 
     db.init_app(app)
     bcrypt.init_app(app)
