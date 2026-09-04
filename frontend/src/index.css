@@ -182,23 +182,16 @@ h1, h2, h3, .brand {
   color: #FAF8F5;
   border: 1px solid rgba(250, 248, 245, 0.22);
   backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 .btn-secondary:hover {
   background: rgba(250, 248, 245, 0.2);
   border-color: #FAF8F5;
   color: #FFFFFF;
   transform: translateY(-1px);
-}
-;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-}
-.btn-secondary:hover {
-  background: #FFFFFF;
-  border-color: var(--red-primary);
-  color: var(--red-dark);
-  transform: scale(1.03);
   box-shadow: 0 6px 18px rgba(250, 45, 72, 0.15);
 }
+
 
 .btn-danger {
   background: rgba(244, 63, 94, 0.08);
