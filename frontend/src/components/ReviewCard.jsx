@@ -1,25 +1,35 @@
 import React, { useState } from "react";
 import StarRating from "./StarRating.jsx";
 
-export default function ReviewCard({ review, currentUserId, onEdit, onDelete }) {
+export default function ReviewCard({ review, currentUserId, isAdmin, onEdit, onDelete }) {
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(review.review_text);
   const [rating, setRating] = useState(review.rating);
-  const isOwner = review.user_id === currentUserId;
+  const isOwner = Boolean(currentUserId && review.user_id === currentUserId);
+
 
   const save = () => {
     onEdit(review.id, { review_text: text, rating });
     setEditing(false);
   };
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    try {
+      const d = new Date(dateStr);
+      return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
+    } catch (_) {
+      return "";
+    }
+  };
+
   return (
     <div className="review-card">
       <div className="review-head">
         <span className="review-user">{review.username || "Anonymous"}</span>
-        <span className="review-date">
-          {review.created_at ? new Date(review.created_at).toLocaleDateString() : ""}
-        </span>
+        <span className="review-date">{formatDate(review.created_at)}</span>
       </div>
+
 
       {editing ? (
         <>
