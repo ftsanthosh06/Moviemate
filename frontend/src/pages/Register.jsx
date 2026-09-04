@@ -42,11 +42,66 @@ export default function Register() {
   };
 
   return (
-    <main className="container">
+    <main className="auth-page-container">
+      {/* Motion Cinema Background Elements */}
+      <div className="cinema-bg-decor" aria-hidden="true">
+        <div className="cinema-spotlight spotlight-1"></div>
+        <div className="cinema-spotlight spotlight-2"></div>
+        <div className="cinema-spotlight spotlight-3"></div>
+
+        <div className="floating-badge badge-1">🎬</div>
+        <div className="floating-badge badge-2">🍿</div>
+        <div className="floating-badge badge-3">🎟️</div>
+        <div className="floating-badge badge-4">🎥</div>
+        <div className="floating-badge badge-5">⭐</div>
+
+        <div className="film-strip strip-top">
+          <div className="strip-track">
+            <span>🎞️ NOW SHOWING</span>
+            <span>✦</span>
+            <span>🍿 POPCORN & REVIEWS</span>
+            <span>✦</span>
+            <span>🎬 CINEMATIC EXPERIENCES</span>
+            <span>✦</span>
+            <span>⭐ DISCOVER TOP MOVIES</span>
+            <span>✦</span>
+            <span>🎞️ NOW SHOWING</span>
+            <span>✦</span>
+            <span>🍿 POPCORN & REVIEWS</span>
+            <span>✦</span>
+            <span>🎬 CINEMATIC EXPERIENCES</span>
+            <span>✦</span>
+            <span>⭐ DISCOVER TOP MOVIES</span>
+          </div>
+        </div>
+
+        <div className="film-strip strip-bottom">
+          <div className="strip-track track-reverse">
+            <span>🎥 EXCLUSIVE RATINGS</span>
+            <span>✦</span>
+            <span>🎟️ ADMIT ONE</span>
+            <span>✦</span>
+            <span>✨ LUXURY MOVIE-MATE</span>
+            <span>✦</span>
+            <span>🌟 HOLLYWOOD BLOCKBUSTERS</span>
+            <span>✦</span>
+            <span>🎥 EXCLUSIVE RATINGS</span>
+            <span>✦</span>
+            <span>🎟️ ADMIT ONE</span>
+            <span>✦</span>
+            <span>✨ LUXURY MOVIE-MATE</span>
+            <span>✦</span>
+            <span>🌟 HOLLYWOOD BLOCKBUSTERS</span>
+          </div>
+        </div>
+      </div>
+
       <div className="auth-wrap">
         <div className="auth-card">
-          <div className="auth-logo">🎬 Movie-Mate</div>
-
+          <div className="auth-logo">
+            <span className="logo-badge">🎬</span>
+            <span>Movie-Mate</span>
+          </div>
 
           <h2 className="auth-title">Create an account</h2>
           <p className="auth-sub">Join and start discovering great movies</p>
@@ -112,3 +167,4 @@ export default function Register() {
     </main>
   );
 }
+
