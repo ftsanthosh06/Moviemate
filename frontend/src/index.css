@@ -765,21 +765,27 @@ h1, h2, h3, .brand {
   width: 100%;
   padding: 14px 18px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--text-primary);
+  border: 1px solid rgba(250, 248, 245, 0.22);
+  background: rgba(10, 16, 12, 0.75);
+  color: #FFFFFF !important;
   font-size: 15px;
   font-family: var(--font-body);
   transition: var(--transition);
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(250, 248, 245, 0.45);
 }
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
   border-color: var(--red-primary);
-  box-shadow: 0 0 0 3px rgba(250, 45, 72, 0.12);
-  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(250, 45, 72, 0.25);
+  background: rgba(10, 16, 12, 0.95);
+  color: #FFFFFF !important;
 }
+
 
 /* ---------- Cinematic Full-Bleed Movie Background Auth Theme ---------- */
 .cinema-auth-page {
