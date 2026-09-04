@@ -136,6 +136,14 @@ def logout():
     return jsonify({"message": "Logged out"}), 200
 
 
+@auth_bp.after_request
+def disable_caching(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0, private"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+
 @auth_bp.get("/me")
 def me():
     user_id = get_current_user_id()
@@ -147,4 +155,5 @@ def me():
         return jsonify({"error": "User not found"}), 401
     token = generate_token(user.id)
     return jsonify({"user": user.to_dict(), "token": token}), 200
+
 

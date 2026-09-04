@@ -7,13 +7,23 @@ export function AuthProvider({ children }) {
   const [user, setUser]       = useState(null);   // logged-in user object
   const [loading, setLoading] = useState(true);   // checking session on mount
 
-  // On app load, check if there's already a valid session
+  // On app load, check if there's already a valid token in localStorage
   useEffect(() => {
+    const token = localStorage.getItem("moviemate_token");
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     api.me()
       .then((data) => setUser(data.user))
-      .catch(() => setUser(null))
+      .catch(() => {
+        setUser(null);
+        localStorage.removeItem("moviemate_token");
+      })
       .finally(() => setLoading(false));
   }, []);
+
 
   const login = async (username, password) => {
     const data = await api.login({ username, password });
