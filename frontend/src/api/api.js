@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://moviemate-1-28mc.onrender.com/api";
 
 async function request(path, options = {}) {
   let res;
