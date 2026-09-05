@@ -9,6 +9,8 @@ import MovieCard from "../components/MovieCard.jsx";
 import { Loader, EmptyState } from "../components/Loader.jsx";
 
 
+import NotFound from "./NotFound.jsx";
+
 export default function MovieDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -73,6 +75,9 @@ export default function MovieDetails() {
 
 
   if (loading) return <Loader label="Loading movie..." />;
+  if (error && (error.toLowerCase().includes("failed to connect") || error.toLowerCase().includes("network"))) {
+    return <NotFound isNetworkError={true} onRetry={load} />;
+  }
   if (!movie)  return <div className="container"><div className="alert alert-error">{error || "Movie not found"}</div></div>;
 
   return (

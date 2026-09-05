@@ -6,6 +6,7 @@ import FilterPanel from "../components/FilterPanel.jsx";
 import MovieCard from "../components/MovieCard.jsx";
 import RecommendationSection from "../components/RecommendationSection.jsx";
 import { Loader, EmptyState } from "../components/Loader.jsx";
+import NotFound from "./NotFound.jsx";
 
 export default function Home() {
   const { isLoggedIn } = useAuth();
@@ -27,6 +28,10 @@ export default function Home() {
 
   useEffect(() => { api.getGenres().then(setGenres).catch(() => {}); }, []);
   useEffect(() => { const t = setTimeout(loadMovies, 300); return () => clearTimeout(t); }, [loadMovies]);
+
+  if (error && (error.toLowerCase().includes("failed to connect") || error.toLowerCase().includes("network"))) {
+    return <NotFound isNetworkError={true} onRetry={loadMovies} />;
+  }
 
   const topRated   = [...movies].sort((a, b) => b.average_rating - a.average_rating).slice(0, 6);
   const isFiltering = search || filters.genre || filters.year || filters.min_rating || filters.sort;
