@@ -390,7 +390,15 @@ h1, h2, h3, .brand {
 .filter-panel select:focus {
   outline: none;
   border-color: var(--red-primary);
-  background: #FFFFFF;
+  background: rgba(26, 38, 27, 0.95);
+  color: #FAF8F5;
+  box-shadow: 0 0 15px rgba(250, 45, 72, 0.25);
+}
+
+.filter-panel select option {
+  background: #121A13;
+  color: #FAF8F5;
+  padding: 8px 12px;
 }
 
 /* ---------- Hero Section ---------- */
@@ -627,11 +635,13 @@ h1, h2, h3, .brand {
   align-items: center;
   gap: 16px;
   margin-bottom: 22px;
-  padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.9);
+  padding: 14px 20px;
+  background: rgba(18, 26, 19, 0.88);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-olive);
+  border: 1px solid rgba(250, 248, 245, 0.18);
+  backdrop-filter: blur(20px);
   width: fit-content;
+  box-shadow: var(--shadow-card);
 }
 .details-rating-number {
   font-size: 32px;
@@ -712,17 +722,16 @@ h1, h2, h3, .brand {
 }
 
 .btn-edit {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--olive-dark);
-  border: 1px solid var(--border-olive);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  background: rgba(250, 248, 245, 0.1);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 .btn-edit:hover {
-  background: #FFFFFF;
-  border-color: var(--olive-primary);
-  color: var(--olive-primary);
+  background: rgba(250, 248, 245, 0.2);
+  border-color: rgba(250, 248, 245, 0.35);
+  color: #FFFFFF;
   transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(44, 57, 43, 0.12);
 }
 
 .btn-delete {

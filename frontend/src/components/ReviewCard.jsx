@@ -40,7 +40,7 @@ export default function ReviewCard({ review, currentUserId, isAdmin, onEdit, onD
               width: "100%",
               marginTop: 10,
               minHeight: 80,
-              background: "rgba(255, 255, 255, 0.9)",
+              background: "rgba(18, 26, 19, 0.88)",
               color: "var(--text-primary)",
               border: "1px solid var(--border-olive)",
               borderRadius: "var(--radius-sm)",
