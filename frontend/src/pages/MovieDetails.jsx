@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { api } from "../api/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import BackButton from "../components/BackButton.jsx";
@@ -12,6 +12,7 @@ import { Loader, EmptyState } from "../components/Loader.jsx";
 export default function MovieDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAdmin, isLoggedIn } = useAuth();
 
   const [movie, setMovie]     = useState(null);
@@ -33,11 +34,19 @@ export default function MovieDetails() {
 
   useEffect(load, [load]);
 
+  useEffect(() => {
+    if (location.state && location.state.successMsg) {
+      setSuccess(location.state.successMsg);
+      setTimeout(() => setSuccess(""), 4000);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
   const handleRate = (value) => {
     if (!isLoggedIn) { setError("Please log in to rate movies."); return; }
     setMyRating(value);
     api.rateMovie({ movie_id: Number(id), rating: value })
-      .then(() => { setSuccess("Rating saved!"); load(); setTimeout(() => setSuccess(""), 2000); })
+      .then(() => { setSuccess(`Rating saved by ${user?.username || "you"}!`); load(); setTimeout(() => setSuccess(""), 3000); })
       .catch((e) => setError(e.message));
   };
 
@@ -46,13 +55,22 @@ export default function MovieDetails() {
     api.deleteMovie(id).then(() => navigate("/")).catch((e) => setError(e.message));
   };
 
-  const handleEditReview  = (reviewId, payload) =>
-    api.updateReview(reviewId, payload).then(load).catch((e) => setError(e.message));
+  const handleEditReview = (reviewId, payload) =>
+    api.updateReview(reviewId, payload).then(() => {
+      setSuccess(`Review updated successfully by ${user?.username || "you"}!`);
+      load();
+      setTimeout(() => setSuccess(""), 3500);
+    }).catch((e) => setError(e.message));
 
   const handleDeleteReview = (reviewId) => {
     if (!window.confirm("Delete this review?")) return;
-    api.deleteReview(reviewId).then(load).catch((e) => setError(e.message));
+    api.deleteReview(reviewId).then(() => {
+      setSuccess(`Review deleted by ${user?.username || "you"}.`);
+      load();
+      setTimeout(() => setSuccess(""), 3500);
+    }).catch((e) => setError(e.message));
   };
+
 
   if (loading) return <Loader label="Loading movie..." />;
   if (!movie)  return <div className="container"><div className="alert alert-error">{error || "Movie not found"}</div></div>;

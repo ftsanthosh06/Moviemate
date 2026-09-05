@@ -1241,3 +1241,95 @@ main {
   }
 }
 
+/* ---------- Global High Contrast Select & Options ---------- */
+select option {
+  background-color: #121A13 !important;
+  color: #FAF8F5 !important;
+  padding: 10px;
+}
+
+/* ---------- Animated Dark Cinema Loader ---------- */
+.cinema-loader-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  min-height: 280px;
+  gap: 18px;
+}
+
+.cinema-reel-spinner {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reel-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(250, 45, 72, 0.15);
+  border-top-color: var(--red-primary);
+  border-right-color: var(--accent-gold);
+  animation: reelSpin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+  box-shadow: 0 0 20px rgba(250, 45, 72, 0.3);
+}
+
+.reel-center {
+  font-size: 28px;
+  animation: reelPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes reelSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes reelPulse {
+  0% { transform: scale(0.9); }
+  100% { transform: scale(1.15); }
+}
+
+.loader-label {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+/* ---------- 404 & Network Graphic ---------- */
+.notfound-graphic {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.notfound-code {
+  font-family: var(--font-heading);
+  font-size: 96px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #FA2D48 0%, #D81B36 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.35;
+  line-height: 1;
+}
+
+.notfound-reel {
+  position: absolute;
+  font-size: 54px;
+  animation: reelPulse 2.5s ease-in-out infinite alternate;
+}
+
+

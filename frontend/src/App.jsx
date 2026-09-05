@@ -10,6 +10,7 @@ import MovieDetails from "./pages/MovieDetails.jsx";
 import AddMovie from "./pages/AddMovie.jsx";
 import WriteReview from "./pages/WriteReview.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
   return (
@@ -40,11 +41,10 @@ export default function App() {
           <ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>
         } />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <footer className="footer">MOVIE-MATE &copy; 2026 &mdash; Designed for Cinema Lovers</footer>
-
-
     </AuthProvider>
   );
 }
+

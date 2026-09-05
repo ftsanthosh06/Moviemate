@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { api } from "../api/api.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import StarRating from "../components/StarRating.jsx";
 import BackButton from "../components/BackButton.jsx";
 
 export default function WriteReview() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [movie, setMovie]       = useState(null);
   const [rating, setRating]     = useState(0);
@@ -28,13 +30,16 @@ export default function WriteReview() {
     try {
       await api.createReview({ movie_id: Number(id), review_text: reviewText.trim(), rating });
       await api.rateMovie({ movie_id: Number(id), rating });
-      navigate(`/movies/${id}`);
+      navigate(`/movies/${id}`, {
+        state: { successMsg: `Review posted successfully by ${user?.username || "you"}!` }
+      });
     } catch (e) {
       setError(e.message);
     } finally {
       setSubmitting(false);
     }
   };
+
 
   return (
     <main className="container" style={{ paddingTop: 20 }}>
