@@ -119,8 +119,10 @@ def login():
         return jsonify({"error": "Username and password are required"}), 400
 
     user = User.query.filter_by(username=username).first()
-    if not user or not user.check_password(password):
-        return jsonify({"error": "Invalid username or password"}), 401
+    if not user:
+        return jsonify({"error": "Invalid Username! Please ensure you are registered."}), 401
+    if not user.check_password(password):
+        return jsonify({"error": "Invalid password. Please try again."}), 401
 
     session.permanent = True
     session["user_id"] = user.id

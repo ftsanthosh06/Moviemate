@@ -38,7 +38,19 @@ export default function Login() {
           <h1 className="cinema-brand-title">MOVIE-MATE</h1>
           <div className="cinema-divider"></div>
 
-          {error && <div className="alert alert-error" style={{ marginBottom: 20 }}>{error}</div>}
+          {error && (
+            <div className="alert alert-error" style={{ marginBottom: 20, textAlign: "center" }}>
+              <div>{error}</div>
+              {error.toLowerCase().includes("registered") && (
+                <div style={{ marginTop: 8, fontSize: 13.5 }}>
+                  Need an account?{" "}
+                  <Link to="/register" style={{ color: "#FFFFFF", textDecoration: "underline", fontWeight: 700 }}>
+                    Click here to Register
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="cinema-field-group">
