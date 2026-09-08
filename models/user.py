@@ -1,3 +1,5 @@
+import random
+from datetime import datetime, timedelta
 from extensions import db, bcrypt
 
 
@@ -9,6 +11,8 @@ class User(db.Model):
     email      = db.Column(db.String(120), nullable=False, unique=True)
     password   = db.Column(db.String(255), nullable=False)
     role       = db.Column(db.Enum("user", "admin"), nullable=False, default="user")
+    otp_code   = db.Column(db.String(10), nullable=True)
+    otp_expiry = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     ratings = db.relationship("Rating", backref="user", cascade="all, delete-orphan")
@@ -22,6 +26,23 @@ class User(db.Model):
 
     def is_admin(self):
         return self.role == "admin"
+
+    def generate_otp(self):
+        otp = f"{random.randint(100000, 999999)}"
+        self.otp_code = otp
+        self.otp_expiry = datetime.utcnow() + timedelta(minutes=10)
+        return otp
+
+    def verify_otp(self, code):
+        if not self.otp_code or not self.otp_expiry:
+            return False
+        if datetime.utcnow() > self.otp_expiry:
+            return False
+        return self.otp_code.strip() == str(code).strip()
+
+    def clear_otp(self):
+        self.otp_code = None
+        self.otp_expiry = None
 
     def to_dict(self):
         return {

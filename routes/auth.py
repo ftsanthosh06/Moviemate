@@ -159,3 +159,68 @@ def me():
     return jsonify({"user": user.to_dict(), "token": token}), 200
 
 
+def mask_email(email):
+    if not email or "@" not in email:
+        return email
+    parts = email.split("@")
+    name, domain = parts[0], parts[1]
+    if len(name) <= 2:
+        masked_name = name[0] + "*"
+    else:
+        masked_name = name[0] + "*" * (len(name) - 2) + name[-1]
+    return f"{masked_name}@{domain}"
+
+
+@auth_bp.post("/forgot-password/request-otp")
+def request_otp():
+    data = request.get_json(silent=True) or {}
+    identifier = (data.get("identifier") or "").strip()
+
+    if not identifier:
+        return jsonify({"error": "Please enter your username or email address"}), 400
+
+    user = User.query.filter((User.username == identifier) | (User.email == identifier)).first()
+    if not user:
+        return jsonify({"error": "No account found with this username or email address. Please ensure you are registered."}), 404
+
+    otp = user.generate_otp()
+    db.session.commit()
+
+    masked = mask_email(user.email)
+    print(f"[OTP Email Verification] Sent OTP {otp} to {user.email} (Username: {user.username})")
+
+    return jsonify({
+        "message": f"OTP verification code sent to {masked}!",
+        "email_masked": masked,
+        "username": user.username,
+        "demo_otp": otp
+    }), 200
+
+
+@auth_bp.post("/forgot-password/reset")
+def reset_password_with_otp():
+    data = request.get_json(silent=True) or {}
+    identifier   = (data.get("identifier") or "").strip()
+    otp          = (data.get("otp") or "").strip()
+    new_password = (data.get("new_password") or "").strip()
+
+    if not identifier or not otp or not new_password:
+        return jsonify({"error": "All fields are required"}), 400
+
+    if len(new_password) < 6:
+        return jsonify({"error": "New password must be at least 6 characters"}), 400
+
+    user = User.query.filter((User.username == identifier) | (User.email == identifier)).first()
+    if not user:
+        return jsonify({"error": "User account not found"}), 404
+
+    if not user.verify_otp(otp):
+        return jsonify({"error": "Invalid or expired OTP verification code. Please request a new OTP."}), 400
+
+    user.set_password(new_password)
+    user.clear_otp()
+    db.session.commit()
+
+    return jsonify({"message": "Password reset successfully! You can now sign in with your new password."}), 200
+
+

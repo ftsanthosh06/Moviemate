@@ -51,6 +51,24 @@ def delete_user(user_id):
     return jsonify({"message": "User deleted"}), 200
 
 
+@admin_bp.post("/users/<int:user_id>/reset-password")
+@admin_required
+def reset_user_password(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json(silent=True) or {}
+    new_password = (data.get("new_password") or "").strip()
+    if not new_password or len(new_password) < 6:
+        return jsonify({"error": "New password must be at least 6 characters"}), 400
+
+    user.set_password(new_password)
+    user.clear_otp()
+    db.session.commit()
+    return jsonify({"message": f"Password for '{user.username}' updated successfully."}), 200
+
+
 @admin_bp.get("/stats")
 @admin_required
 def stats():

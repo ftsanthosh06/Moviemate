@@ -10,6 +10,7 @@ import MovieDetails from "./pages/MovieDetails.jsx";
 import AddMovie from "./pages/AddMovie.jsx";
 import WriteReview from "./pages/WriteReview.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -34,9 +35,10 @@ export default function App() {
       ) : (
         <Routes>
           {/* Public */}
-          <Route path="/login"    element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/movies/:id" element={<MovieDetails />} />
+          <Route path="/login"           element={<Login />} />
+          <Route path="/register"        element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/movies/:id"      element={<MovieDetails />} />
 
           {/* Protected: logged-in users */}
           <Route path="/" element={

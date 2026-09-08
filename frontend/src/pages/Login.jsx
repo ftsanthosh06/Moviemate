@@ -68,7 +68,12 @@ export default function Login() {
             </div>
 
             <div className="cinema-field-group">
-              <label>PASSWORD</label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <label style={{ margin: 0 }}>PASSWORD</label>
+                <Link to="/forgot-password" style={{ fontSize: 12.5, color: "#FA2D48", fontWeight: 600, textDecoration: "none" }}>
+                  Forgot Password?
+                </Link>
+              </div>
               <div className="cinema-input-wrap">
                 <span className="input-icon">🔒</span>
                 <input

@@ -48,6 +48,22 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleResetPassword = async (userId, username) => {
+    const newPass = window.prompt(`Enter a new password for user "${username}":`);
+    if (newPass === null) return;
+    if (!newPass.trim() || newPass.trim().length < 6) {
+      alert("Password must be at least 6 characters.");
+      return;
+    }
+    try {
+      await api.adminResetPassword(userId, newPass.trim());
+      setSuccess(`Password for "${username}" reset successfully.`);
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (e) {
+      setError(e.message);
+    }
+  };
+
   if (loading) return <Loader label="Loading dashboard..." />;
 
   return (
@@ -133,6 +149,13 @@ export default function AdminDashboard() {
                               Make User
                             </button>
                           )}
+                          <button
+                            className="btn btn-secondary"
+                            style={{ fontSize: 12, padding: "5px 10px" }}
+                            onClick={() => handleResetPassword(u.id, u.username)}
+                          >
+                            🔑 Reset Password
+                          </button>
                           <button
                             className="btn btn-danger"
                             style={{ fontSize: 12, padding: "5px 10px" }}

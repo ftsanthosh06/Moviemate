@@ -69,6 +69,8 @@ export const api = {
     clearToken();
     return request("/auth/logout", { method: "POST" });
   },
+  requestOtp: (identifier) => request("/auth/forgot-password/request-otp", { method: "POST", body: JSON.stringify({ identifier }) }),
+  resetPasswordWithOtp: (payload) => request("/auth/forgot-password/reset", { method: "POST", body: JSON.stringify(payload) }),
 
 
   // ── Movies ────────────────────────────────────────────────
@@ -98,8 +100,9 @@ export const api = {
   getRelatedMovies:   (movieId)   => request(`/recommendations/related/${movieId}`),
 
   // ── Admin ─────────────────────────────────────────────────
-  adminGetUsers:    ()            => request("/admin/users"),
-  adminGetStats:    ()            => request("/admin/stats"),
-  adminChangeRole:  (id, role)    => request(`/admin/users/${id}/role`,   { method: "PUT",    body: JSON.stringify({ role }) }),
-  adminDeleteUser:  (id)          => request(`/admin/users/${id}`,         { method: "DELETE" }),
+  adminGetUsers:        ()            => request("/admin/users"),
+  adminGetStats:        ()            => request("/admin/stats"),
+  adminChangeRole:      (id, role)    => request(`/admin/users/${id}/role`,   { method: "PUT",    body: JSON.stringify({ role }) }),
+  adminDeleteUser:      (id)          => request(`/admin/users/${id}`,         { method: "DELETE" }),
+  adminResetPassword:   (id, new_password) => request(`/admin/users/${id}/reset-password`, { method: "POST", body: JSON.stringify({ new_password }) }),
 };
