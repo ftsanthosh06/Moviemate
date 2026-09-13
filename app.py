@@ -92,11 +92,13 @@ def create_app():
             inspector = inspect(db.engine)
             if "users" in inspector.get_table_names():
                 columns = [c["name"] for c in inspector.get_columns("users")]
-                if "otp_code" not in columns:
-                    with db.engine.connect() as conn:
+                with db.engine.connect() as conn:
+                    if "otp_code" not in columns:
                         conn.execute(text("ALTER TABLE users ADD COLUMN otp_code VARCHAR(10)"))
                         conn.execute(text("ALTER TABLE users ADD COLUMN otp_expiry DATETIME"))
-                        conn.commit()
+                    if "phone" not in columns:
+                        conn.execute(text("ALTER TABLE users ADD COLUMN phone VARCHAR(20)"))
+                    conn.commit()
             seed_demo_data()
         except Exception as e:
             print(f"Error during DB initialization: {e}")

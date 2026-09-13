@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
+import GoogleAuthButton from "../components/GoogleAuthButton.jsx";
 
 export default function Login() {
   const { login }  = useAuth();
@@ -89,6 +90,14 @@ export default function Login() {
               {loading ? "SIGNING IN..." : "SIGN IN"}
             </button>
           </form>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "20px 0 10px" }}>
+            <div style={{ flex: 1, height: 1, background: "rgba(250, 248, 245, 0.14)" }}></div>
+            <span style={{ fontSize: 12, color: "rgba(250, 248, 245, 0.5)", fontWeight: 600 }}>OR</span>
+            <div style={{ flex: 1, height: 1, background: "rgba(250, 248, 245, 0.14)" }}></div>
+          </div>
+
+          <GoogleAuthButton onError={setError} />
 
           <div className="cinema-switch-wrap">
             <span style={{ fontSize: 13, color: "rgba(250, 248, 245, 0.7)" }}>Don't have an account?</span>

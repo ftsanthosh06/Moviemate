@@ -78,8 +78,8 @@ export default function ForgotPassword() {
           </h2>
           <p style={{ fontSize: 13.5, color: "var(--text-secondary)", textAlign: "center", marginBottom: 24 }}>
             {step === 1
-              ? "Enter your registered username or email to receive a 6-digit OTP verification code."
-              : `Enter the 6-digit verification code sent to ${emailMasked || "your email"} and set your new password.`}
+              ? "Enter your registered username, email address, or mobile number to receive a 6-digit OTP verification code."
+              : `Enter the 6-digit verification code sent to ${emailMasked || "your registered email/mobile"} and set your new password.`}
           </p>
 
           {error && <div className="alert alert-error" style={{ marginBottom: 20, textAlign: "center" }}>{error}</div>}
@@ -90,25 +90,31 @@ export default function ForgotPassword() {
               background: "rgba(255, 215, 0, 0.12)",
               border: "1px solid rgba(255, 215, 0, 0.35)",
               borderRadius: "var(--radius-sm)",
-              padding: "10px 14px",
+              padding: "12px 16px",
               marginBottom: 20,
-              fontSize: 13,
+              fontSize: 13.5,
               color: "#FFD700",
               textAlign: "center"
             }}>
-              <b>📩 Demo OTP Code:</b> <span style={{ fontSize: 16, fontWeight: 800, letterSpacing: 2, marginLeft: 6 }}>{demoOtp}</span>
+              <div style={{ fontWeight: 700, marginBottom: 4 }}>📩 OTP Email / SMS Verification Code:</div>
+              <span style={{ fontSize: 22, fontWeight: 900, letterSpacing: 4, color: "#FFFFFF", display: "inline-block", margin: "4px 0" }}>
+                {demoOtp}
+              </span>
+              <div style={{ fontSize: 12, color: "rgba(250, 248, 245, 0.7)" }}>
+                Valid for 10 minutes. Enter this 6-digit code below to reset your password.
+              </div>
             </div>
           )}
 
           {step === 1 ? (
             <form onSubmit={handleRequestOtp}>
               <div className="cinema-field-group">
-                <label>USERNAME OR EMAIL ADDRESS</label>
+                <label>USERNAME, EMAIL, OR MOBILE NUMBER</label>
                 <div className="cinema-input-wrap">
                   <span className="input-icon">👤</span>
                   <input
                     type="text"
-                    placeholder="Enter your username or email"
+                    placeholder="Enter username, email, or mobile (+91...)"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     autoFocus

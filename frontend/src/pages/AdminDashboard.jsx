@@ -109,6 +109,7 @@ export default function AdminDashboard() {
                   <th>ID</th>
                   <th>Username</th>
                   <th>Email</th>
+                  <th>Mobile</th>
                   <th>Role</th>
                   <th>Joined</th>
                   <th>Actions</th>
@@ -123,6 +124,7 @@ export default function AdminDashboard() {
                       {u.id === user.id && <span className="you-badge">You</span>}
                     </td>
                     <td style={{ color: "var(--text-muted)" }}>{u.email}</td>
+                    <td style={{ color: "var(--text-muted)", fontSize: 13 }}>{u.phone || "—"}</td>
                     <td>
                       <span className={`role-badge ${u.role}`}>{u.role}</span>
                     </td>

@@ -69,6 +69,11 @@ export const api = {
     clearToken();
     return request("/auth/logout", { method: "POST" });
   },
+  googleAuth: async (payload) => {
+    const data = await request("/auth/google", { method: "POST", body: JSON.stringify(payload) });
+    if (data && data.token) setToken(data.token);
+    return data;
+  },
   requestOtp: (identifier) => request("/auth/forgot-password/request-otp", { method: "POST", body: JSON.stringify({ identifier }) }),
   resetPasswordWithOtp: (payload) => request("/auth/forgot-password/reset", { method: "POST", body: JSON.stringify(payload) }),
 

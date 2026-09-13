@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
+import GoogleAuthButton from "../components/GoogleAuthButton.jsx";
 
 export default function Register() {
   const { register } = useAuth();
   const navigate     = useNavigate();
 
-  const [form, setForm]   = useState({ username: "", email: "", password: "", confirm: "" });
+  const [form, setForm]   = useState({ username: "", email: "", phone: "", password: "", confirm: "" });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,7 @@ export default function Register() {
     if (!validate()) return;
     setLoading(true);
     try {
-      await register(form.username, form.email, form.password);
+      await register(form.username, form.email, form.phone, form.password);
       navigate("/");
     } catch (err) {
       setServerError(err.message);
@@ -70,7 +71,7 @@ export default function Register() {
             </div>
 
             <div className="cinema-field-group">
-              <label>EMAIL (OPTIONAL)</label>
+              <label>EMAIL ADDRESS</label>
               <div className="cinema-input-wrap">
                 <span className="input-icon">✉️</span>
                 <input
@@ -81,6 +82,20 @@ export default function Register() {
                 />
               </div>
               {errors.email && <div className="field-error">{errors.email}</div>}
+            </div>
+
+            <div className="cinema-field-group">
+              <label>MOBILE NUMBER (FOR OTP VERIFICATION)</label>
+              <div className="cinema-input-wrap">
+                <span className="input-icon">📱</span>
+                <input
+                  type="tel"
+                  placeholder="e.g. +91 9876543210"
+                  value={form.phone}
+                  onChange={(e) => update("phone", e.target.value)}
+                />
+              </div>
+              {errors.phone && <div className="field-error">{errors.phone}</div>}
             </div>
 
             <div className="cinema-field-group">
@@ -115,6 +130,14 @@ export default function Register() {
               {loading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
             </button>
           </form>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "20px 0 10px" }}>
+            <div style={{ flex: 1, height: 1, background: "rgba(250, 248, 245, 0.14)" }}></div>
+            <span style={{ fontSize: 12, color: "rgba(250, 248, 245, 0.5)", fontWeight: 600 }}>OR</span>
+            <div style={{ flex: 1, height: 1, background: "rgba(250, 248, 245, 0.14)" }}></div>
+          </div>
+
+          <GoogleAuthButton onError={setServerError} />
 
           <div className="cinema-switch-wrap">
             <span style={{ fontSize: 13, color: "rgba(250, 248, 245, 0.7)" }}>Already have an account?</span>
