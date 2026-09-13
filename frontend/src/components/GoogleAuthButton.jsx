@@ -7,17 +7,17 @@ export default function GoogleAuthButton({ onError }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "793284910234-moviemate.apps.googleusercontent.com";
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
   useEffect(() => {
-    // Dynamically load Google Identity Services SDK
+    if (!googleClientId) return;
     if (window.google?.accounts?.id) return;
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
-  }, []);
+  }, [googleClientId]);
 
   const handleCredentialResponse = async (response) => {
     setLoading(true);
@@ -37,7 +37,7 @@ export default function GoogleAuthButton({ onError }) {
 
   const handleGoogleClick = () => {
     setLoading(true);
-    if (window.google && window.google.accounts && window.google.accounts.id) {
+    if (googleClientId && window.google && window.google.accounts && window.google.accounts.id) {
       try {
         window.google.accounts.id.initialize({
           client_id: googleClientId,
@@ -45,10 +45,8 @@ export default function GoogleAuthButton({ onError }) {
           auto_select: false,
         });
 
-        // Prompt Google Sign-In One Tap / OAuth dialog
         window.google.accounts.id.prompt((notification) => {
           if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // Fallback: Simulate Google Auth pop-up modal or account chooser prompt
             handleFallbackPrompt();
           }
         });
@@ -61,14 +59,14 @@ export default function GoogleAuthButton({ onError }) {
   };
 
   const handleFallbackPrompt = async () => {
-    const demoEmail = window.prompt("Google Sign-In (Security Mode):\nEnter your Google Email address:", "user@gmail.com");
-    if (!demoEmail || !demoEmail.trim()) {
+    const googleEmail = window.prompt("🌐 Google Authentication:\nEnter your Google Email address to sign in:", "santhosh.official2k06@gmail.com");
+    if (!googleEmail || !googleEmail.trim()) {
       setLoading(false);
       return;
     }
-    const demoName = demoEmail.split("@")[0];
+    const googleName = googleEmail.split("@")[0];
     try {
-      const user = await googleLogin({ email: demoEmail.trim(), name: demoName });
+      const user = await googleLogin({ email: googleEmail.trim(), name: googleName });
       navigate(user?.role === "admin" ? "/admin" : "/");
     } catch (err) {
       if (onError) onError(err.message || "Google Authentication failed.");
@@ -113,7 +111,6 @@ export default function GoogleAuthButton({ onError }) {
         e.currentTarget.style.transform = "none";
       }}
     >
-      {/* SVG Google Colored Logo */}
       <svg width="20" height="20" viewBox="0 0 48 48">
         <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
         <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z" />
