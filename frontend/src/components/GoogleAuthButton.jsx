@@ -9,7 +9,7 @@ export default function GoogleAuthButton({ onError }) {
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [customEmailInput, setCustomEmailInput] = useState("");
 
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "793284910234-moviemate.apps.googleusercontent.com";
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
   // List of device accounts detected or entered
   const [savedDeviceAccounts, setSavedDeviceAccounts] = useState(() => {
@@ -22,13 +22,14 @@ export default function GoogleAuthButton({ onError }) {
   });
 
   useEffect(() => {
+    if (!googleClientId) return;
     if (window.google?.accounts) return;
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
-  }, []);
+  }, [googleClientId]);
 
   const handleSelectGoogleAccount = async (email) => {
     if (!email || !email.trim()) return;
@@ -55,11 +56,10 @@ export default function GoogleAuthButton({ onError }) {
   };
 
   const handleGoogleClick = () => {
-    setLoading(true);
-
-    // Try Google Native OAuth2 Token Client with prompt: 'select_account'
-    if (window.google?.accounts?.oauth2) {
+    // Only invoke Google's external popup if an active custom VITE_GOOGLE_CLIENT_ID exists
+    if (googleClientId && window.google?.accounts?.oauth2) {
       try {
+        setLoading(true);
         const client = window.google.accounts.oauth2.initTokenClient({
           client_id: googleClientId,
           scope: "email profile openid",
@@ -91,9 +91,8 @@ export default function GoogleAuthButton({ onError }) {
       } catch (_) {}
     }
 
-    // Show native device account selector modal
+    // Instantly open the Google Account Chooser modal!
     setShowAccountModal(true);
-    setLoading(false);
   };
 
   return (
