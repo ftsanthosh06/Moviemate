@@ -5,7 +5,8 @@ import SearchBar from "../components/SearchBar.jsx";
 import FilterPanel from "../components/FilterPanel.jsx";
 import MovieCard from "../components/MovieCard.jsx";
 import RecommendationSection from "../components/RecommendationSection.jsx";
-import { Loader, EmptyState } from "../components/Loader.jsx";
+import { Loader } from "../components/Loader.jsx";
+import NoResultsFound from "../components/NoResultsFound.jsx";
 import NotFound from "./NotFound.jsx";
 
 export default function Home() {
@@ -26,8 +27,21 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, [search, filters]);
 
+  const handleResetFilters = () => {
+    setSearch("");
+    setFilters({ genre: "", year: "", min_rating: "", sort: "" });
+  };
+
   useEffect(() => { api.getGenres().then(setGenres).catch(() => {}); }, []);
-  useEffect(() => { const t = setTimeout(loadMovies, 300); return () => clearTimeout(t); }, [loadMovies]);
+
+  useEffect(() => {
+    if (!search) {
+      loadMovies();
+    } else {
+      const t = setTimeout(loadMovies, 180);
+      return () => clearTimeout(t);
+    }
+  }, [loadMovies, search]);
 
   if (error && (error.toLowerCase().includes("failed to connect") || error.toLowerCase().includes("network"))) {
     return <NotFound isNetworkError={true} onRetry={loadMovies} />;
@@ -60,8 +74,8 @@ export default function Home() {
                 <p>{movies.length} movie{movies.length === 1 ? "" : "s"} found</p>
               </div>
             </div>
-            {loading ? <Loader label="Loading movies..." /> :
-              movies.length === 0 ? <EmptyState title="No movies match your search" /> :
+            {loading ? <Loader label="Searching cinema catalog..." /> :
+              movies.length === 0 ? <NoResultsFound searchTerm={search} activeFilters={filters} onReset={handleResetFilters} /> :
               <div className="movie-grid">{movies.map((m) => <MovieCard key={m.id} movie={m} />)}</div>
             }
           </section>
@@ -99,7 +113,7 @@ export default function Home() {
                 </div>
               </div>
               {loading ? <Loader label="Loading movies..." /> :
-                movies.length === 0 ? <EmptyState title="No movies yet" subtitle="An admin can add movies." /> :
+                movies.length === 0 ? <NoResultsFound searchTerm={search} activeFilters={filters} onReset={handleResetFilters} /> :
                 <div className="movie-grid">{movies.map((m) => <MovieCard key={m.id} movie={m} />)}</div>
               }
             </section>

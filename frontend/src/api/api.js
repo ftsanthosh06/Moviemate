@@ -85,7 +85,12 @@ export const api = {
     ).toString();
     return request(`/movies${query ? `?${query}` : ""}`);
   },
-  getGenres:   ()        => request("/movies/genres"),
+  getGenres: async () => {
+    if (window._genresCache) return window._genresCache;
+    const data = await request("/movies/genres");
+    window._genresCache = data;
+    return data;
+  },
   getMovie:    (id)      => request(`/movies/${id}`),
   createMovie: (payload) => request("/movies",     { method: "POST", body: JSON.stringify(payload) }),
   updateMovie: (id, p)   => request(`/movies/${id}`, { method: "PUT",  body: JSON.stringify(p) }),
